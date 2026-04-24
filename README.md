@@ -6,8 +6,8 @@ This repo does **not** contain application code. It contains the orchestration
 glue — Docker Compose, environment templates, helper scripts and
 cross-cutting documentation — that ties together two sibling repositories:
 
-- [`baby-monitor-frontend`](https://github.com/marchidan-florin24/baby-monitor-frontend) — Angular PWA
-- [`baby-monitor-backend`](https://github.com/marchidan-florin24/baby-monitor-backend) — .NET 8 Web API + PostgreSQL
+- [`baby-monitor-frontend`](https://github.com/florin2495/baby-monitor-frontend) — Angular PWA
+- [`baby-monitor-backend`](https://github.com/florin2495/baby-monitor-backend) — .NET 8 Web API + PostgreSQL
 
 > The GitHub URLs above are placeholders — update them once the repos are
 > published.
