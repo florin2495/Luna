@@ -1,0 +1,48 @@
+# ==========================
+# Environment / secrets
+# ==========================
+.env
+.env.local
+.env.*.local
+
+# ==========================
+# Docker
+# ==========================
+# local docker compose overrides should never be committed
+docker-compose.override.yml
+docker-compose.override.yaml
+.docker/
+
+# Volumes accidentally exported to the working tree
+*.tar
+*.tar.gz
+backups/
+
+# ==========================
+# Editors / IDEs
+# ==========================
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+
+# ==========================
+# OS
+# ==========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==========================
+# Misc
+# ==========================
+*.log
+*.tmp
+*.bak
