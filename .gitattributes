@@ -1,0 +1,12 @@
+# Default — let Git auto-detect text vs. binary.
+* text=auto
+
+# Shell scripts must keep LF line endings so they execute on Linux containers
+# even when checked out on Windows.
+*.sh text eol=lf
+
+# Lockfiles, configs, and dotfiles that some editors mangle on Windows.
+*.yml text eol=lf
+*.yaml text eol=lf
+.env.example text eol=lf
+Dockerfile text eol=lf

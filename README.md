@@ -54,7 +54,7 @@ Luna expects the three repositories to live side-by-side on disk:
 ├── Luna/                       <- this repo
 │   ├── docker-compose.yml
 │   ├── .env.example
-│   ├── scripts/                (planned)
+│   ├── scripts/
 │   │   ├── clone-all.sh
 │   │   └── start.sh
 │   ├── docs/                   (planned)
@@ -77,11 +77,8 @@ Items marked *(planned)* land in follow-up commits.
 
 ## Getting started
 
-> Status: `postgres` works today. The `api` service is wired up in
-> `docker-compose.yml` but its Docker image is built from a `Dockerfile`
-> that lands in a follow-up commit on `baby-monitor-backend`. Until then,
-> bring up only postgres: `docker compose up postgres`.
-> The `web` service is added by a later META commit.
+> Status: `postgres` and `api` services work today. The `web` service is
+> added by a later META commit.
 
 ### 1. Clone all three repositories
 
@@ -92,7 +89,7 @@ git clone https://github.com/<you>/baby-monitor-frontend.git
 git clone https://github.com/<you>/baby-monitor-backend.git
 ```
 
-Or, after Luna ships the helper script:
+Or, using Luna's helper script:
 
 ```bash
 git clone https://github.com/<you>/Luna.git && cd Luna
@@ -110,11 +107,9 @@ cp .env.example .env
 ### 3. Start the stack
 
 ```bash
-# Today (postgres only — until the API Dockerfile lands)
-docker compose up postgres
-
-# Later (full stack)
-docker compose up --build
+./scripts/start.sh              # builds + starts everything
+# or, manually:
+docker compose up -d --build
 ```
 
 Services:
@@ -167,13 +162,14 @@ A ready-to-use backup script will be added under `scripts/` in a later commit.
 - [x] Initial repo skeletons for Luna, frontend, backend
 - [x] Backend: .NET 10 solution scaffold (API / Core / Infrastructure)
 - [x] Backend: domain entities + EF Core wiring
-- [x] `docker-compose.yml` orchestrating db (and api, once Dockerfile lands)
+- [x] `docker-compose.yml` orchestrating db + api
 - [x] `.env.example` with all required variables
-- [ ] Backend: `Dockerfile`
-- [ ] Backend: initial EF Core migration + CRUD controllers
-- [ ] `scripts/clone-all.sh` and `scripts/start.sh`
-- [ ] Frontend: Angular PWA scaffold, Dexie.js local storage
+- [x] Backend: `Dockerfile` (multi-stage, non-root runtime)
+- [x] Backend: `InitialCreate` EF Core migration
+- [x] `scripts/clone-all.sh` and `scripts/start.sh`
+- [ ] Backend: CRUD controllers
 - [ ] Auth (ASP.NET Identity + JWT)
+- [ ] Frontend: Angular PWA scaffold, Dexie.js local storage
 - [ ] Offline sync (`POST /api/sync` + client `SyncService`)
 - [ ] PDF export for pediatrician reports
 - [ ] Push notifications (reminders)
