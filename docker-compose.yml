@@ -1,0 +1,55 @@
+# Luna — orchestration for the local stack.
+#
+# Services (added incrementally):
+#   - postgres : PostgreSQL 16 with a persistent named volume
+#   - api      : .NET 10 Web API. Builds from ../baby-monitor-backend.
+#                Until commit "004 BE - Dockerfile" lands in that repo, this
+#                service has nothing to build and should be skipped:
+#                    docker compose up postgres
+#   - web      : Angular PWA. Wired in by commit "004 META".
+#
+# All credentials and DB names are read from a sibling .env file (see
+# .env.example for the template). Never commit a real .env.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: luna_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # Expose 5432 on the host so EF Core migrations can be run from
+      # outside Docker during development (`dotnet ef database update`).
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ../baby-monitor-backend
+      dockerfile: Dockerfile
+    container_name: luna_api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # Inside the container the API listens on 8080. The host port mapping
+      # below exposes it as 5000 to match the local-dev convention.
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__LunaDb: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+    ports:
+      - "5000:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    name: luna_postgres_data

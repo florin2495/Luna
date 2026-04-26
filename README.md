@@ -7,7 +7,7 @@ glue — Docker Compose, environment templates, helper scripts and
 cross-cutting documentation — that ties together two sibling repositories:
 
 - [`baby-monitor-frontend`](https://github.com/florin2495/baby-monitor-frontend) — Angular PWA
-- [`baby-monitor-backend`](https://github.com/florin2495/baby-monitor-backend) — .NET 8 Web API + PostgreSQL
+- [`baby-monitor-backend`](https://github.com/florin2495/baby-monitor-backend) — .NET 10 Web API + PostgreSQL
 
 > The GitHub URLs above are placeholders — update them once the repos are
 > published.
@@ -26,7 +26,7 @@ leaves the host.
 
 ```
 +---------------------+          +-------------------------+
-|  Angular PWA        |  HTTPS   |  .NET 8 Web API         |
+|  Angular PWA        |  HTTPS   |  .NET 10 Web API        |
 |  (baby-monitor-     |<-------->|  (baby-monitor-backend) |
 |   frontend)         |  JSON    |                         |
 +---------------------+          +------------+------------+
@@ -52,8 +52,8 @@ Luna expects the three repositories to live side-by-side on disk:
 ```
 <your-workspace>/
 ├── Luna/                       <- this repo
-│   ├── docker-compose.yml      (planned)
-│   ├── .env.example            (planned)
+│   ├── docker-compose.yml
+│   ├── .env.example
 │   ├── scripts/                (planned)
 │   │   ├── clone-all.sh
 │   │   └── start.sh
@@ -65,21 +65,23 @@ Luna expects the three repositories to live side-by-side on disk:
 └── baby-monitor-backend/       <- independent repo
 ```
 
-Only `README.md`, `.gitignore` and `LICENSE` are committed at this stage.
-Everything marked *(planned)* lands in follow-up commits.
+Items marked *(planned)* land in follow-up commits.
 
 ## Prerequisites
 
 - **Docker Desktop** with the WSL2 backend (Windows) or native Docker
   (Linux / macOS)
 - **Git** 2.30+
-- **.NET 8 SDK** and **Node.js 20+** — only needed if you plan to run the
+- **.NET 10 SDK** and **Node.js 20+** — only needed if you plan to run the
   frontend/backend outside Docker for development
 
-## Getting started (planned workflow)
+## Getting started
 
-> None of this works yet — the orchestration files are not committed. These
-> are the commands you will run once the stack is wired up.
+> Status: `postgres` works today. The `api` service is wired up in
+> `docker-compose.yml` but its Docker image is built from a `Dockerfile`
+> that lands in a follow-up commit on `baby-monitor-backend`. Until then,
+> bring up only postgres: `docker compose up postgres`.
+> The `web` service is added by a later META commit.
 
 ### 1. Clone all three repositories
 
@@ -108,6 +110,10 @@ cp .env.example .env
 ### 3. Start the stack
 
 ```bash
+# Today (postgres only — until the API Dockerfile lands)
+docker compose up postgres
+
+# Later (full stack)
 docker compose up --build
 ```
 
@@ -159,11 +165,13 @@ A ready-to-use backup script will be added under `scripts/` in a later commit.
 ## Roadmap
 
 - [x] Initial repo skeletons for Luna, frontend, backend
-- [ ] `docker-compose.yml` orchestrating api + db + frontend
-- [ ] `.env.example` with all required variables
+- [x] Backend: .NET 10 solution scaffold (API / Core / Infrastructure)
+- [x] Backend: domain entities + EF Core wiring
+- [x] `docker-compose.yml` orchestrating db (and api, once Dockerfile lands)
+- [x] `.env.example` with all required variables
+- [ ] Backend: `Dockerfile`
+- [ ] Backend: initial EF Core migration + CRUD controllers
 - [ ] `scripts/clone-all.sh` and `scripts/start.sh`
-- [ ] Backend: .NET 8 solution scaffold (API / Core / Infrastructure)
-- [ ] Backend: entities, EF Core migrations, initial CRUD controllers
 - [ ] Frontend: Angular PWA scaffold, Dexie.js local storage
 - [ ] Auth (ASP.NET Identity + JWT)
 - [ ] Offline sync (`POST /api/sync` + client `SyncService`)
