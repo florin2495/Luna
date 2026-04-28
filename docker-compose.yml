@@ -6,7 +6,7 @@
 #                Until commit "004 BE - Dockerfile" lands in that repo, this
 #                service has nothing to build and should be skipped:
 #                    docker compose up postgres
-#   - web      : Angular PWA. Wired in by commit "004 META".
+#   - web      : Angular PWA served via nginx. Proxies /api to the API.
 #
 # All credentials and DB names are read from a sibling .env file (see
 # .env.example for the template). Never commit a real .env.
@@ -49,6 +49,17 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  web:
+    build:
+      context: ../baby-monitor-frontend
+      dockerfile: Dockerfile
+    container_name: luna_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
 
 volumes:
   postgres_data:
